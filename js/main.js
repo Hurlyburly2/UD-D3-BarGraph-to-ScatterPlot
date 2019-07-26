@@ -84,7 +84,7 @@ const update = (data) => {
     .range(d3.schemeRdBu[data.length + 2])
   
   // JOIN NEW DATA WITH OLD ELEMENTS
-  let rectangles = graphGroup.selectAll("rect")
+  let rectangles = graphGroup.selectAll("circle")
     .data(data, (data) => { return data.month })
     // ^second is a arg that returns keys that d3 matches up
     
@@ -97,18 +97,15 @@ const update = (data) => {
       .remove()
 
   rectangles.enter()
-    .append("rect")     // applied only on enter
+    .append("circle")     // applied only on enter
       .attr("fill", (month) => { return colors(month.month) })
-      .attr("height", 0)
-      .attr("y", y(0))
-      .attr("x", (month) => { return x(month.month) })
-      .attr("width", x.bandwidth())
+      .attr("cy", y(0))
+      .attr("cx", (month) => { return x(month.month) + (x.bandwidth() / 2) })
+      .attr('r', 5)
       .merge(rectangles)      // lets you get rid of update section (stuff after this is applied on ENTER and UPDATE)
       .transition(transition)
-        .attr("x", (month) => { return x(month.month )})
-        .attr("width", x.bandwidth())
-        .attr("height", (month) => { return canvasHeight - y(month[value]) })
-        .attr("y", (month) => { return y(month[value]) })
+        .attr("cx", (month) => { return x(month.month) + (x.bandwidth() / 2) })
+        .attr("cy", (month) => { return y(month[value]) })
       
   let label = flag ? "Revenue" : "Profit"
   yLabel.text(label)
